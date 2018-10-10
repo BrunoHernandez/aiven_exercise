@@ -37,9 +37,19 @@ The producer and consumer programs must be configured by editing the file:
 
     application.properties
 
-The configuration values are hardcoded to more or less arbitrary values, except
-for the "bootstrap.servers" (introduce URL of Aiven service) and the security
-settings: location of truststore, location of keystore and passwords.
+Change the values for "bootstrap.servers" (introduce URL of Aiven service)
+and the security settings: location of truststore, location of keystore and
+passwords.
+
+The database connection capability is configured by editing the file:
+
+    postgresql.properties
+
+Change the values for jdbc.url to your service's URL, also the rest of security
+related values such as user, password and sslrootcert (path).
+
+Otherwise, the configuration values are hardcoded to more or less arbitrary
+values.
 
 TODO: This installation could be secured by a private key and the passwords
 should be encrypted.

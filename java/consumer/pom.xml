@@ -11,6 +11,14 @@
   <description>Contains example consumer</description>
   <artifactId>consumer</artifactId>
   <packaging>jar</packaging>
+  <dependencies>
+    <!-- https://mvnrepository.com/artifact/postgresql/postgresql -->
+    <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>9.1-901-1.jdbc4</version>
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
       <plugin>

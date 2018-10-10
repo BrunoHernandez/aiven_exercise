@@ -15,8 +15,7 @@ public final class ScopedPostgreSqlConnection implements AutoCloseable {
     private Connection connection = null;
     private Properties properties = new Properties();
 
-    public ScopedPostgreSqlConnection(DataAccessObject dataAccessObject)
-            throws SQLException{
+    public ScopedPostgreSqlConnection() {
         try {
             properties.load(new java.io.FileInputStream(PROPERTIES_PATH));
         } catch (java.io.IOException exception) {
@@ -24,10 +23,13 @@ public final class ScopedPostgreSqlConnection implements AutoCloseable {
                                + exception);
         }
         openConnection();
-        dataAccessObject = new DataAccessObject(connection);
     }
 
     private void openConnection() {
+        System.setProperty("javax.net.ssl.trustStore",
+                           properties.getProperty("sslrootstore"));
+        System.setProperty("javax.net.ssl.trustStorePassword",
+                           properties.getProperty("sslrootstorepass"));
         final int RETRIES = Integer.parseInt(
             properties.getProperty(OPEN_RETRIES));
         for (int i = 0; i < RETRIES; i++) {
@@ -38,7 +40,8 @@ public final class ScopedPostgreSqlConnection implements AutoCloseable {
                 return;
             } catch (SQLException exception) {
                 System.err.println("Error getting database connection: "
-                                   + exception.getMessage());
+                                   + exception.getMessage()
+                                   + exception.getCause());
                 sleep();
             }
         }
@@ -81,5 +84,9 @@ public final class ScopedPostgreSqlConnection implements AutoCloseable {
 
     public boolean isOpen() {
         return connection != null;
+    }
+
+    public Connection getConnection() {
+        return this.connection;
     }
 }

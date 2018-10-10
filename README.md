@@ -41,6 +41,13 @@ Change the values for "bootstrap.servers" (introduce URL of Aiven service)
 and the security settings: location of truststore, location of keystore and
 passwords.
 
+Go through the paths of the rest of credentials in
+
+    build.sh
+
+So that the credentials are built in the same directory and the names
+correspond to the ones in "application.properties".
+
 The database connection capability is configured by editing the file:
 
     postgresql.properties
@@ -55,6 +62,14 @@ TODO: This installation could be secured by a private key and the passwords
 should be encrypted.
 
 ### Usage
+
+It's cumbersome to remember to start a consumer and producer one after another,
+and then check the database. This can be automated running:
+
+    ./scenario.sh
+
+At the end of the simulation, given the correct PostgreSQL service path, it
+show the contents of the database.
 
 Start a producer instance from the developer host by running:
 

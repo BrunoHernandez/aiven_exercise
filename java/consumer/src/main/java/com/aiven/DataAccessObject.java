@@ -7,11 +7,12 @@ import java.sql.SQLException;
 public final class DataAccessObject {
 
     private Connection connection;
+    private boolean autoCommit = true;
 
     private static final String SQL_CREATE_TABLE =
-        "CREATE TABLE Records "
-        + "(record_key CHAR(20) PRIMARY KEY     NOT NULL,"
-        + "(value      CHAR(20))";
+        "CREATE TABLE IF NOT EXISTS Records "
+        + "( record_offset BIGINT  PRIMARY KEY  NOT NULL,"
+        + " record_value  CHAR(20) )";
     private static final String[] SQL_RESERVED_CHARACTERS =
     { ",", "&", "?", "{", "}", "\\", "(", ")", "[", "]", "-", ";", "~", "|",
       "$", "!", ">", "*", "%", "_"/*wildcard*/};
@@ -27,10 +28,11 @@ public final class DataAccessObject {
 
     private void createTable() throws SQLException {
         final String[] updates = {SQL_CREATE_TABLE};
-        executeUpdates(updates);
+        executeUpdates(updates, !autoCommit);
     }
 
-    private void executeUpdates(String[] updates) throws SQLException {
+    private void executeUpdates(String[] updates, boolean needsCommit)
+            throws SQLException {
         String currentUpdate = "none";
         try {
             Statement statement = connection.createStatement();
@@ -39,7 +41,9 @@ public final class DataAccessObject {
                 statement.executeUpdate(update);
             }
             statement.close();
-            connection.commit();
+            if (needsCommit) {
+                connection.commit();
+            }
         } catch (SQLException exception) {
             throw new SQLException("Error updating table: "
                 + "\nupdate: " + currentUpdate
@@ -47,14 +51,13 @@ public final class DataAccessObject {
         }
     }
 
-    public void insertRecord(String key, String value) throws SQLException {
-        checkSqlReservedCharacters(key);
+    public void insertRecord(long offset, String value) throws SQLException {
         checkSqlReservedCharacters(value);
         final String SQL_INSERT_RECORD =
-            "INSERT INTO Records (record_key, value) "
-            + "VALUES (\'" + key + "\', \'" + value + "\');";
+            "INSERT INTO Records (record_offset, record_value) "
+            + "VALUES (\'" + offset + "\', \'" + value + "\');";
         final String[] updates = {SQL_INSERT_RECORD};
-        executeUpdates(updates);
+        executeUpdates(updates, !autoCommit);
     }
 
     private void checkSqlReservedCharacters(String word) throws SQLException {

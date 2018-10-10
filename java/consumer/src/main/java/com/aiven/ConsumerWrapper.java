@@ -44,11 +44,13 @@ public class ConsumerWrapper {
             ConsumerRecords<String, String> records =
                 consumer.poll(POLLING_TIMEOUT_MS);
             for (ConsumerRecord<String, String> record : records) {
-                System.out.printf("offset = %d, key = %s, value = %s",
+                System.out.printf(
+                    "[Consumer] offset = %d, key = %s, value = %s\n",
                     record.offset(), record.key(), record.value());
                 try {
-                    dataAccessObject.insertRecord(record.key(),
-                                                  record.value());
+                    dataAccessObject.insertRecord(
+                        record.offset(),
+                        record.value());
                 } catch (java.sql.SQLException exception) {
                     System.err.println("Could not insert record in database. "
                                        + "Exception: "

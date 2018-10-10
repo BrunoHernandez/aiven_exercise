@@ -9,6 +9,7 @@
   <packaging>pom</packaging>
   <modules>
     <module>producer</module>
+    <module>consumer</module>
   </modules>
   <dependencies>
     <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka -->

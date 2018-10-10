@@ -1,0 +1,4 @@
+*.jar
+maven-status
+maven-archiver
+classes

@@ -7,7 +7,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 
 public class ProducerWrapper {
 
-    private static String PROPERTIES_PATH = "producer.properties";
+    private static String PROPERTIES_PATH = "application.properties";
 
     private Properties properties;
     private Producer<String, String> producer;
@@ -30,10 +30,12 @@ public class ProducerWrapper {
     }
 
     public void start(int maxSend) {
-        for(int i = 0; i < maxSend; i++)
+        System.out.println("Sending to topic \"" + topicName + "\"");
+        for(int i = 0; i < maxSend; i++) {
             producer.send(new ProducerRecord<String, String>(
                 topicName,
                 Integer.toString(i), Integer.toString(i)));
+        }
         producer.close();
     }
 

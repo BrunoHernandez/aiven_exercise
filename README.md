@@ -31,25 +31,31 @@ downloaded half of the Internet.
 
 ## Applications
 
-### Producer
+### Configuration
 
-The producer program must be configured by editing the file:
+The producer and consumer programs must be configured by editing the file:
 
-    producer.properties
+    application.properties
 
 The configuration values are hardcoded to more or less arbitrary values, except
-for the bootstrap.servers (introduce URL of Aiven service) and the security
+for the "bootstrap.servers" (introduce URL of Aiven service) and the security
 settings: location of truststore, location of keystore and passwords.
 
-TODO: This installation would be secured by a private key and the passwords
+TODO: This installation could be secured by a private key and the passwords
 should be encrypted.
+
+### Usage
 
 Start a producer instance from the developer host by running:
 
-    ./producer_start.sh
+    ./start.sh producer
 
-The producer application has arguments which can be set or left empty (use
-default values). The values for the arguments for current run will be listed
+Start a consumer instance from the developer host by running:
+
+    ./start.sh consumer
+
+The producer and consumer applications have arguments which can be set or left
+empty (use default values). The values used for current run will be listed
 after starting the program.
 
 ## Content

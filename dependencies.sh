@@ -7,11 +7,11 @@ please_install () {
     exit 1
 }
 
-check_openjdk() {
+check_openjdk () {
     which java
 }
 
-check_maven() {
+check_maven () {
     which mvn
 }
 

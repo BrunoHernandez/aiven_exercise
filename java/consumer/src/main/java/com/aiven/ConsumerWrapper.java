@@ -15,11 +15,15 @@ public class ConsumerWrapper {
     private Properties properties;
     private KafkaConsumer<String, String> consumer;
     private String topicName;
+    private DataAccessObject dataAccessObject;
 
-    public ConsumerWrapper(String topicName, String group) {
+    public ConsumerWrapper(String topicName,
+                           String group,
+                           DataAccessObject dataAccessObject) {
         fillProperties(group);
         consumer = new KafkaConsumer<String, String> (properties);
         this.topicName = topicName;
+        this.dataAccessObject = dataAccessObject;
     }
 
     private void fillProperties(String group) {
@@ -42,6 +46,14 @@ public class ConsumerWrapper {
             for (ConsumerRecord<String, String> record : records) {
                 System.out.printf("offset = %d, key = %s, value = %s",
                     record.offset(), record.key(), record.value());
+                try {
+                    dataAccessObject.insertRecord(record.key(),
+                                                  record.value());
+                } catch (java.sql.SQLException exception) {
+                    System.err.println("Could not insert record in database. "
+                                       + "Exception: "
+                                       + exception.getMessage());
+                }
             }
         }
         consumer.close();

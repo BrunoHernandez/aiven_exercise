@@ -30,12 +30,24 @@ public class ExampleConsumer {
             return;
         }
 
-        final ScopedPostgreSqlConnection sqlConnection =
-            new ScopedPostgreSqlConnection();
+        DataAccessObject dataAccessObject = null;
+        ScopedPostgreSqlConnection sqlConnection = null;
+        try {
+            new ScopedPostgreSqlConnection(dataAccessObject);
+        } catch (java.sql.SQLException exception) {
+            System.err.println("No SQL connection. Exception: "
+                               + exception.getMessage());
+            System.exit(1);
+        }
+        if (dataAccessObject == null || sqlConnection == null) {
+            System.err.println("No database access. Exiting...");
+            System.exit(1);
+        }
         addSqlHook(sqlConnection);
         final ConsumerWrapper consumerWrapper =
             new ConsumerWrapper(args[0].toString(),
-                                args[2].toString());
+                                args[2].toString(),
+                                dataAccessObject);
         consumerWrapper.start(Integer.parseInt(args[1]));
     }
 }

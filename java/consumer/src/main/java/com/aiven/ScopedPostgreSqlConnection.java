@@ -2,6 +2,7 @@ package com.aiven.consumer;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Properties;
 
 public final class ScopedPostgreSqlConnection implements AutoCloseable {
@@ -14,7 +15,8 @@ public final class ScopedPostgreSqlConnection implements AutoCloseable {
     private Connection connection = null;
     private Properties properties = new Properties();
 
-    public ScopedPostgreSqlConnection () {
+    public ScopedPostgreSqlConnection(DataAccessObject dataAccessObject)
+            throws SQLException{
         try {
             properties.load(new java.io.FileInputStream(PROPERTIES_PATH));
         } catch (java.io.IOException exception) {
@@ -22,6 +24,7 @@ public final class ScopedPostgreSqlConnection implements AutoCloseable {
                                + exception);
         }
         openConnection();
+        dataAccessObject = new DataAccessObject(connection);
     }
 
     private void openConnection() {
@@ -33,7 +36,7 @@ public final class ScopedPostgreSqlConnection implements AutoCloseable {
                     properties.getProperty("jdbc.url"), properties);
                 System.out.println("Database connection OK.");
                 return;
-            } catch (java.sql.SQLException exception) {
+            } catch (SQLException exception) {
                 System.err.println("Error getting database connection: "
                                    + exception.getMessage());
                 sleep();
@@ -58,7 +61,7 @@ public final class ScopedPostgreSqlConnection implements AutoCloseable {
             try {
                 connection.close();
                 return;
-            } catch (java.sql.SQLException exception) {
+            } catch (SQLException exception) {
                 System.err.println("Error closing connection: "
                                    + exception.getMessage());
                 sleep();

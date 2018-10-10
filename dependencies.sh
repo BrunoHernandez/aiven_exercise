@@ -15,10 +15,16 @@ check_maven () {
     which mvn
 }
 
+check_postgresql () {
+    which psql
+}
+
 if ! check_openjdk; then
     please_install "OpenJDK"
 elif ! check_maven; then
     please_install "Maven"
+elif ! check_postgresql; then
+    please_install "PostgreSQL"
 fi
 
 echo "Done."
